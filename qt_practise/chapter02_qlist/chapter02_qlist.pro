@@ -6,7 +6,7 @@
 
 QT       += core
 
-QT       -= gui
+QT       += gui
 
 TARGET = chapter02_qlist
 CONFIG   += console
