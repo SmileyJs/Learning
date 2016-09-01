@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>P24_MAP_2100.png</file>
+    </qresource>
+</RCC>

@@ -13,6 +13,17 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        dialog.cpp
+        dialog.cpp \
+    baseinfo.cpp \
+    detail.cpp \
+    contact.cpp
 
-HEADERS  += dialog.h
+HEADERS  += dialog.h \
+    baseinfo.h \
+    detail.h \
+    contact.h
+
+DISTFILES +=
+
+RESOURCES += \
+    resource.qrc
