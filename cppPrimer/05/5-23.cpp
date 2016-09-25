@@ -27,8 +27,6 @@ main(int argc, char const *argv[])
 			cin >> rsp;
 			if (!cin || rsp != 'Y') break;
 		}
-
-
 	}
 
 	return 0;
