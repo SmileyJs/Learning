@@ -7,3 +7,5 @@ int fact(int);
 
 // 6-2
 void swap(int*, int*);
+void reset(int&);
+void swapRef(int&, int&);
