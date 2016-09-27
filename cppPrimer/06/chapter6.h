@@ -9,3 +9,6 @@ int fact(int);
 void swap(int*, int*);
 void reset(int&);
 void swapRef(int&, int&);
+bool bHasCapitalLetter(const string &);
+void changeLowerLetter(string &);
+string::size_type findChar(const string &, char, int &);
