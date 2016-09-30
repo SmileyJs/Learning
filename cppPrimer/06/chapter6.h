@@ -12,3 +12,5 @@ void swapRef(int&, int&);
 bool bHasCapitalLetter(const string &);
 void changeLowerLetter(string &);
 string::size_type findChar(const string &, char, int &);
+int compareInt(const int, const int *);
+// void swapPointer(int *&, int *&);
