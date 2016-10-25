@@ -1,23 +1,23 @@
 #include "chapter6.h"
 
+int
+main(int argc, char const *argv[])
+{
+	int i = 1, j = 2;
+	cout << "Before swapPointer, i = " << i << " j = " << j << endl;
+	int *a = &i, *b = &j;
+	swapPointer(a, b);
+	cout << "After swapPointer, i = " << *a << " j = " << *b << endl; 
+
+	return 0;
+}
+
 void
 swapPointer(int *&p, int *&q)
 {
 	auto tmp = p;
 	p = q;
 	q = tmp;
-}
-
-int
-main(int argc, char const *argv[])
-{
-	int i = 1, j = 2;
-	cout << "Before swapPointer, i = " << i << " j = " << j << endl;
-	auto a = &i, b = &j;
-	swapPointer(a, b);
-	cout << "After swapPointer, i = " << *a << " j = " << *b << endl; 
-
-	return 0;
 }
 
 // #include <iostream>
@@ -36,6 +36,5 @@ main(int argc, char const *argv[])
 //     auto rht = &j;
 //     swap(lft, rht);
 //     std::cout << *lft << " " << *rht << std::endl;
-
 //     return 0;
 // }

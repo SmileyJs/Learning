@@ -13,4 +13,11 @@ bool bHasCapitalLetter(const string &);
 void changeLowerLetter(string &);
 string::size_type findChar(const string &, char, int &);
 int compareInt(const int, const int *);
-// void swapPointer(int *&, int *&);
+void swapPointer(int *&, int *&);
+
+void print(const int*);
+void print(const char*);
+void print(const int*, const int*);
+void print(const int*, size_t);
+void print(const int(&)[2]);
+void print(const int (&ia)[10]);
