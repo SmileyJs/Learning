@@ -1,4 +1,5 @@
 #include <iostream>
+#include <initializer_list>
 
 using namespace std;
 
@@ -21,3 +22,5 @@ void print(const int*, const int*);
 void print(const int*, size_t);
 void print(const int(&)[2]);
 void print(const int (&ia)[10]);
+
+int numberSum(initializer_list<int>);
