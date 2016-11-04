@@ -1,5 +1,7 @@
 #include <iostream>
 #include <initializer_list>
+#include <cstdlib>
+#include <vector>
 
 using namespace std;
 
@@ -24,3 +26,8 @@ void print(const int(&)[2]);
 void print(const int (&ia)[10]);
 
 int numberSum(initializer_list<int>);
+
+// 6-3
+bool str_subRange(const string &, const string &);
+int factorial(int);
+void vectorRecursion(vector<int>::iterator, vector<int>::iterator);
