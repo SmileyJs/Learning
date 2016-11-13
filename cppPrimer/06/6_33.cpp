@@ -14,6 +14,10 @@ vectorRecursion(vector<int>::iterator start, vector<int>::iterator end)
 	// for (auto i : vec) {
 	// 	cout << i << endl;
 	// }
+
+#ifndef NDEBUG
+	cout << end - start << " ";
+#endif
 	if (start != end) {
 		cout << *start << endl;
 		// vectorRecursion(++start, end);

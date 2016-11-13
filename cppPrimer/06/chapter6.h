@@ -31,3 +31,22 @@ int numberSum(initializer_list<int>);
 bool str_subRange(const string &, const string &);
 int factorial(int);
 void vectorRecursion(vector<int>::iterator, vector<int>::iterator);
+string make_plural(size_t ctr, const string &word, const string &ending = "s");
+
+// 6-4
+inline bool isShorter(const string &s1, const string &s2) {
+	return s1.size() < s2.size();
+}
+void printVec(vector<int> &);
+
+// 6-6
+void f();
+void f(int);
+void f(int, int);
+void f(double, double);
+
+// 6-7
+int add(const int&, const int&);
+int dec(const int&, const int&);
+int multi(const int&, const int&);
+int div(const int&, const int&);
