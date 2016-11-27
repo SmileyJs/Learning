@@ -15,7 +15,7 @@ main(int argc, char const *argv[])
 		Sales_data trans;
 		while (cin >> trans.bookNo >> trans.units_sold >> trans.revenue) {
 			if (total.isbn() == trans.isbn()) {
-				total.conbine(trans);
+				total.combine(trans);
 			}
 			else {
 				cout << total.isbn() << " " << total.units_sold << " " << total.revenue << endl;
