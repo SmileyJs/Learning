@@ -6,7 +6,19 @@ using std::string;
 using std::istream;
 using std::ostream;
 
+struct Sales_data;
+istream &read(istream &, Sales_data&);
+
 struct Sales_data{
+	Sales_data() = default;
+	Sales_data(istream &is) {
+		read(is, *this);
+	};
+	Sales_data(const string &s) : bookNo(s) { };
+	Sales_data(const string &s, unsigned n, double price) : 
+		bookNo(s), units_sold(n), revenue(price*n) { };
+
+
 	string isbn() const { return bookNo;};
 	double avg_price() const;
 	Sales_data& combine(const Sales_data &rhs);
@@ -15,6 +27,7 @@ struct Sales_data{
 	unsigned units_sold = 0;
 	double revenue = 0.0;
 };
+
 
 Sales_data
 &Sales_data::combine(const Sales_data &rhs) {
@@ -56,3 +69,7 @@ add(Sales_data &lhs, Sales_data&rhs) {
 	lhs.combine(rhs);
 	return sum;
 }
+
+// Sales_data::Sales_data(istream &is) {
+// 	read(is, *this);
+// }
