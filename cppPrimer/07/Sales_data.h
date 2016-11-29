@@ -19,6 +19,9 @@ struct Sales_data{
 		bookNo(s), units_sold(n), revenue(price*n) { };
 
 
+	// 7_14
+	// Sales_data() : units_sold(0), revennu(0.0) { };
+
 	string isbn() const { return bookNo;};
 	double avg_price() const;
 	Sales_data& combine(const Sales_data &rhs);

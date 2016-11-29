@@ -4,12 +4,19 @@ using std::string;
 using std::istream;
 using std::ostream;
 
-struct Person {
+struct Person;
+istream& read(istream &, Person &);
 
+struct Person {
+	Person() = default;
+	Person(const string sname, const string saddress) :
+		name(sname), address(saddress) { };
+	Person(istream &is) {
+		read(is, *this);
+	}
 public:
 	const string& getName() const {return name;};
 	const string& getAddress() const {return address;};
-
 	string name;
 	string address;
 };
