@@ -4,19 +4,25 @@ using std::string;
 using std::istream;
 using std::ostream;
 
-struct Person;
+class Person;
 istream& read(istream &, Person &);
 
-struct Person {
+class Person {
+	friend istream &read(istream &, Person &);
+	friend ostream &print(ostream &, const Person &);
+
+public:
 	Person() = default;
 	Person(const string sname, const string saddress) :
 		name(sname), address(saddress) { };
 	Person(istream &is) {
 		read(is, *this);
 	}
-public:
+
 	const string& getName() const {return name;};
 	const string& getAddress() const {return address;};
+
+private:
 	string name;
 	string address;
 };
@@ -34,7 +40,7 @@ istream &read(istream &is, Person &item) {
 	return is;
 }
 
-ostream &printf(ostream &os, const Person &item) {
+ostream &print(ostream &os, const Person &item) {
 	os << item.name << " " << item.address;
 	return os;
 }

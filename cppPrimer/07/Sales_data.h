@@ -6,10 +6,15 @@ using std::string;
 using std::istream;
 using std::ostream;
 
-struct Sales_data;
+class Sales_data;
 istream &read(istream &, Sales_data&);
 
-struct Sales_data{
+class Sales_data{
+	friend istream &read(istream &, Sales_data &item);
+	friend ostream &print(ostream &, const Sales_data &);
+	friend Sales_data add(Sales_data &, Sales_data &);
+
+public:
 	Sales_data() = default;
 	Sales_data(istream &is) {
 		read(is, *this);
@@ -26,6 +31,7 @@ struct Sales_data{
 	double avg_price() const;
 	Sales_data& combine(const Sales_data &rhs);
 
+private:
 	string bookNo;
 	unsigned units_sold = 0;
 	double revenue = 0.0;
@@ -69,7 +75,7 @@ Sales_data
 add(Sales_data &lhs, Sales_data&rhs) {
 	Sales_data sum;
 	sum = lhs;
-	lhs.combine(rhs);
+	sum.combine(rhs);
 	return sum;
 }
 
