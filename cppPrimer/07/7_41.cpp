@@ -21,7 +21,7 @@ public:
 	Sales_data(const string &s) : Sales_data(s, 0, 0) {
 		cout << "depend on Delegating constructor only string parameter" << endl;
 	};
-	Sales_data(std::istream &is) : Sales_data(){
+	Sales_data(std::istream &is) : Sales_data() {
 		cout << "depend on Delegating constructor only istream" << endl;
 	};
 
