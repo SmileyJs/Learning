@@ -3,3 +3,6 @@ aaa 1 1
 bbb 1 1
 bbb 1 1
 ccc 1 1
+ddd 2 2
+ddd 1 2
+eee 3 3
