@@ -23,6 +23,7 @@ public:
 	Sales_data(const string &s, unsigned n, double price) : 
 		bookNo(s), units_sold(n), revenue(price*n) { };
 
+	Sales_data& operator += (const Sales_data &);
 
 	// 7_14
 	// Sales_data() : units_sold(0), revennu(0.0) { };
@@ -77,6 +78,23 @@ add(Sales_data &lhs, Sales_data&rhs) {
 	sum = lhs;
 	sum.combine(rhs);
 	return sum;
+}
+
+Sales_data&
+Sales_data::operator+=(const Sales_data &rhs)
+{
+	units_sold += rhs.units_sold;
+	revenue += rhs.revenue;
+
+	return *this;
+}
+
+Sales_data
+operator+(const Sales_data &lhs, const Sales_data &rhs)
+{
+	Sales_data ret(lhs);
+	ret += rhs;
+	return ret;
 }
 
 // Sales_data::Sales_data(istream &is) {
