@@ -28,15 +28,19 @@ main(int argc, char const *argv[])
 	ostream_iterator<int> odd_iter(odd_os, " ");
 	ostream_iterator<int> even_iter(even_os, "\n");
 
-	while (in != eof) {
-		if (*in % 2) {
-			*odd_iter++ = *in;
-		}
-		else {
-			*even_iter++ = *in;
-		}
-		++in;
-	}
+	// while (in != eof) {
+	// 	if (*in % 2) {
+	// 		*odd_iter++ = *in;
+	// 	}
+	// 	else {
+	// 		*even_iter++ = *in;
+	// 	}
+	// 	++in;
+	// }
+
+	for_each(in, eof, [&odd_iter, &even_iter](const int i) {
+		*(i & 0x1 ? odd_iter : even_iter)++ = i;
+	});
 
 	return 0;
 }
