@@ -6,10 +6,14 @@
 
 using namespace std;
 
+class StrBlobPtr;
+
 class StrBlob {
 public:
 	// using size_type = vector<string>::size_type;
 	typedef vector<string>::size_type size_type;
+
+	friend StrBlobPtr;
 
 	StrBlob();
 	StrBlob(vector<string> &vec);
@@ -18,8 +22,8 @@ public:
 	size_type size() { return data->size();}
 	bool empty() { return data->empty(); };
 
-	// string & front();
-	// string & back();
+	string & front();
+	string & back();
 	// const string & front() const;
 	// const string & back() const;
 	string & front() const;
@@ -64,12 +68,12 @@ StrBlob::check(size_type t, const string &msg) const
 	}
 }
 
-// string &
-// StrBlob::front()
-// {
-// 	check(0, "out_of_range_front");
-// 	return data->front();
-// }
+string &
+StrBlob::front()
+{
+	check(0, "out_of_range_front");
+	return data->front();
+}
 
 // const string &
 // StrBlob::front() const
@@ -85,12 +89,12 @@ StrBlob::front() const
 	return data->front();
 }
 
-// string &
-// StrBlob::back()
-// {
-// 	check(0, "out_of_range_back");
-// 	return data->back();
-// }
+string &
+StrBlob::back()
+{
+	check(0, "out_of_range_back");
+	return data->back();
+}
 
 // const string &
 // StrBlob::back() const
@@ -118,3 +122,17 @@ StrBlob::pop_back()
 	check(0, "out_of_range_pop_back");
 	data->pop_back();
 }
+
+
+class StrBlobPtr {
+	StrBlobPtr ();
+	StrBlobPtr (StrBlob &a , vector<string>::size_type sz = 0) : wPtr(a.data), curr = sz {};
+
+	string &deRef();
+	StrBlobPtr &incr();
+
+private:
+	shared_ptr<vector<string>> check();
+	weak_ptr<vector<string>> wPtr;
+	vector<string>::size_type curr;
+};
