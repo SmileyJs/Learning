@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <stdexcept>
+// #include <stdexcept>
+#include <exception>
 #include <memory>
 
 using namespace std;
@@ -31,6 +32,9 @@ public:
 	void push_back(const string &s);
 	void pop_back();
 
+	StrBlobPtr begin();
+	StrBlobPtr end();
+
 private:
 	shared_ptr<vector<string>> data;
 	void check(size_type t, const string &msg);
@@ -51,6 +55,7 @@ StrBlob::StrBlob(initializer_list<string> il)
 {
 	data = make_shared<vector<string>>(il);
 }
+
 
 void
 StrBlob::check(size_type t, const string &msg)
@@ -123,16 +128,72 @@ StrBlob::pop_back()
 	data->pop_back();
 }
 
-
 class StrBlobPtr {
-	StrBlobPtr ();
-	StrBlobPtr (StrBlob &a , vector<string>::size_type sz = 0) : wPtr(a.data), curr = sz {};
+public:
+	StrBlobPtr () : curr(0) {}
+	StrBlobPtr (StrBlob &a , vector<string>::size_type sz = 0) : wPtr(a.data), curr(sz) {}
 
-	string &deRef();
+	string &deRef() const;
 	StrBlobPtr &incr();
 
+	bool operator!=(const StrBlobPtr &p) { return curr != p.curr; }
+
+private:	
+	shared_ptr<vector<string>> check(vector<string>::size_type, const string &msg) const;
+	weak_ptr<vector<string>> wPtr;
+	vector<string>::size_type curr;
+};
+
+string &
+StrBlobPtr::deRef() const
+{
+	auto p = check(curr, "deReference past end!");
+	return (*p)[curr];
+}
+
+StrBlobPtr &
+StrBlobPtr::incr()
+{
+	check(curr, "increment past end!");
+	++curr;
+	return *this;
+}
+
+shared_ptr<vector<string>>
+StrBlobPtr::check(vector<string>::size_type i, const string &msg) const
+{
+	auto ret = wPtr.lock();
+
+	if (!ret) {
+		throw runtime_error("unbound StrBlobPtr");
+	}
+	else {
+		if (i > ret->size()) throw out_of_range(msg);
+	}
+
+	return ret;
+}
+
+StrBlobPtr
+StrBlob::begin()
+{
+	return StrBlobPtr(*this);
+}
+
+StrBlobPtr
+StrBlob::end()
+{
+	return StrBlobPtr(*this, data->size());
+}
+
+class ConstStrBlobPtr {
+public:
+	using size_type = vector<string>::size_type;
+	ConstStrBlobPtr() : curr(0) {}
+	ConstStrBlobPtr(const StrBlob &a, size_type sz) : wPtr(make_shared<vector<string>>(a)), curr(sz) {}
+
 private:
-	shared_ptr<vector<string>> check();
+	shared_ptr<vector<string>> check(vector<string>) const;
 	weak_ptr<vector<string>> wPtr;
 	vector<string>::size_type curr;
 };
