@@ -41,6 +41,8 @@ public:
 	ConstStrBlobPtr begin() const;
 	ConstStrBlobPtr end() const;
 
+	unsigned count() const { return data.use_count(); }
+
 private:
 	shared_ptr<vector<string>> data;
 	void check(size_type t, const string &msg);
@@ -143,6 +145,7 @@ public:
 	StrBlobPtr &incr();
 
 	bool operator!=(const StrBlobPtr &p) { return curr != p.curr; }
+	unsigned count() const { return wPtr.use_count(); }
 
 private:	
 	shared_ptr<vector<string>> check(vector<string>::size_type, const string &msg) const;
