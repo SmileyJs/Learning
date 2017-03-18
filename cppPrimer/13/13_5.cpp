@@ -16,6 +16,10 @@ public:
 		return *this;
 	}
 
+	~HasPtr() {
+		delete ps;
+	}
+
 private:
 	string *ps;
 	int i;
