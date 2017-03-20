@@ -222,7 +222,7 @@ ConstStrBlobPtr::check(size_type sz, const string &msg) const
 	}
 	else {
 		if (sz > ret->size()) 
-			throw out_of_range("msg");
+			throw out_of_range(msg);
 	}
 
 	return ret;
