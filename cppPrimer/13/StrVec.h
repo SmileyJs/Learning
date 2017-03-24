@@ -9,6 +9,7 @@ class StrVec {
 public:
 	StrVec() : elements(nullptr), firstFree(nullptr), cap(nullptr) {}
 	StrVec(const StrVec &);
+	explicit StrVec(initializer_list<string> il);
 	StrVec &operator=(const StrVec &);
 	~StrVec();
 
@@ -19,6 +20,8 @@ public:
 
 	size_t size() { return firstFree - elements; }
 	size_t capacity() { return cap - elements; }
+	void reserve(size_t);
+	void resize(size_t, const string &t = "");
 
 private:
 	static allocator<string> alloc;
@@ -35,6 +38,15 @@ private:
 StrVec::StrVec(const StrVec &c)
 {
 	auto data = allocNCopy(c.begin(), c.end());
+
+	elements = data.first;
+	firstFree = data.second;
+	cap = data.second;
+}
+
+StrVec::StrVec(initializer_list<string> il)
+{
+	auto data = allocNCopy(il.begin(), il.end());
 
 	elements = data.first;
 	firstFree = data.second;
@@ -110,4 +122,28 @@ StrVec::push_back(const string &s)
 {
 	chkNAllocate();
 	alloc.construct(firstFree++, s);
+}
+
+void
+StrVec::reserve(size_t n)
+{
+	while (capacity() < n) {
+		reallocate();
+	}
+}
+
+void
+StrVec::resize(size_t n, const string &t)
+{
+	if (n > size()) {
+		reserve(n);
+		while (size() < n) {
+			alloc.construct(firstFree++, t);
+		}
+	}
+	else if (n <  size()) {
+		while (size() > n) {
+			alloc.destroy(--firstFree);
+		}
+	}
 }
