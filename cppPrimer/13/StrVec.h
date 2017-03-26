@@ -2,6 +2,8 @@
 #include <string>
 #include <memory>
 #include <utility>
+#include <initializer_list>
+#include <algorithm>
 
 using namespace std;
 
@@ -23,13 +25,16 @@ public:
 	void reserve(size_t);
 	void resize(size_t, const string &t = "");
 
+	const string & at(size_t pos) { return *(elements + pos); }
+
 private:
-	static allocator<string> alloc;
+	allocator<string> alloc;
 	string *elements;
 	string *firstFree;
 	string *cap;
 
 	pair<string *, string *> allocNCopy(const string *, const string *);
+	void allocNMove(size_t);
 	void chkNAllocate();
 	void free();
 	void reallocate();
@@ -83,9 +88,15 @@ void
 StrVec::free()
 {
 	if (elements) {
-		while (firstFree != elements) {
-			alloc.destroy(--firstFree);
-		}
+		// while (firstFree != elements) {
+		// 	alloc.destroy(--firstFree);
+		// }
+
+		// 13_43
+		for_each (elements, firstFree, [this](string &p) {
+			alloc.destroy(&p);
+		});
+
 		alloc.deallocate(elements, cap - elements);
 	}
 }
@@ -94,7 +105,20 @@ void
 StrVec::reallocate()
 {
 	auto newCapacity = size() ? size()*2 : 1;
-	auto newData = alloc.allocate(newCapacity);
+	allocNMove(newCapacity);
+}
+
+pair<string *, string *>
+StrVec::allocNCopy(const string *b,const string *e)
+{
+	auto data = alloc.allocate(e - b);
+	return {data, uninitialized_copy(b, e, data)};
+}
+
+void
+StrVec::allocNMove(size_t n)
+{
+	auto newData = alloc.allocate(n);
 
 	auto dest = newData;
 	auto elem = elements;
@@ -107,14 +131,7 @@ StrVec::reallocate()
 
 	elements = newData;
 	firstFree = dest;
-	cap = elements + newCapacity;
-}
-
-pair<string *, string *>
-StrVec::allocNCopy(const string *b,const string *e)
-{
-	auto data = alloc.allocate(e - b);
-	return {data, uninitialized_copy(b, e, data)};
+	cap = elements + n;
 }
 
 void
@@ -128,7 +145,7 @@ void
 StrVec::reserve(size_t n)
 {
 	while (capacity() < n) {
-		reallocate();
+		allocNMove(n);
 	}
 }
 
