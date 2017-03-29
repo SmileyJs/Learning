@@ -6,11 +6,14 @@ using namespace std;
 class String {
 
 public:
-	String() : pBeg(nullptr), pEnd(nullptr) {}
+	String() : String("") {}
 	String(const char*);
-	String(String &);
+	String(const String &);
 	String& operator=(const String &);
 	~String();
+
+	String(String &&) noexcept;
+	String& operator=(String &&) noexcept;
 
 	size_t length() { return pEnd - pBeg - 1; }
 	size_t size() { return pEnd - pBeg; }
@@ -27,6 +30,8 @@ private:
 
 String::String(const char *p)
 {
+	cout << "String::String(const char *)" << endl;
+
 	const char *s = p;
 	while (*s) ++s;
 
@@ -35,8 +40,10 @@ String::String(const char *p)
 	pEnd = str.second;
 }
 
-String::String(String &c)
+String::String(const String &c)
 {
+	cout << "String::String(String &c)" << endl;
+
 	auto str = allocNCopy(c.pBeg, c.pEnd);
 
 	pBeg = str.first;
@@ -46,6 +53,8 @@ String::String(String &c)
 String&
 String::operator=(const String &c)
 {
+	cout << "String::operator=" << endl;
+
 	auto str = allocNCopy(c.pBeg, c.pEnd);
 
 	free();
@@ -65,7 +74,8 @@ pair<char *, char *>
 String::allocNCopy(const char *b, const char *e)
 {
 	auto str = alloc.allocate(e - b);
-	return {str, uninitialized_copy(b, e, str)};
+	return {str, uninitialized_copy(make_move_iterator(b),
+		make_move_iterator(e), str)};
 }
 
 void
@@ -76,4 +86,31 @@ String::free()
 			alloc.destroy(--i);
 		alloc.deallocate(pBeg, pEnd - pBeg);
 	}
+}
+
+String::String(String &&c) noexcept
+	: pBeg(c.pBeg)
+	, pEnd(c.pEnd)
+{
+	cout << "String::String(String &&c) noexcept" << endl;
+
+	c.pBeg = nullptr;
+	c.pEnd = nullptr;
+}
+
+String&
+String::operator=(String &&c) noexcept
+{
+	cout << "String::operator=(String &&c) noexcept" << endl;
+
+	if (this != &c) {
+		free();
+		pBeg = c.pBeg;
+		pEnd = c.pEnd;
+
+		c.pBeg = nullptr;
+		c.pEnd = nullptr;
+	}
+
+	return *this;
 }

@@ -8,21 +8,10 @@ public:
 	friend bool operator<(const HasPtr &, const HasPtr &);
 	
 	HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
-	HasPtr(const HasPtr &cp) : ps(new string(*cp.ps)), i(cp.i) {}
-	// HasPtr &operator=(const HasPtr &cp) {
-	// 	string *newPs = new string(*cp.ps);
-	// 	// need to delete the orgin string
-	// 	delete ps;
-	// 	ps = newPs;
-	// 	i = cp.i;
+	HasPtr(const HasPtr &);
+	// HasPtr(HasPtr &&);
 
-	// 	return *this;
-	// }
-
-	HasPtr &operator=(HasPtr c) {
-		swap(*this, c);
-		return *this;
-	}
+	HasPtr &operator=(HasPtr);
 
 	~HasPtr() { delete ps; }
 
@@ -50,3 +39,37 @@ operator<(const HasPtr &lhs, const HasPtr &rhs)
 {
 	return *lhs.ps < *rhs.ps;
 }
+
+HasPtr::HasPtr(const HasPtr &c)
+	: ps(new string(*c.ps))
+	, i(c.i)
+{
+	cout << "HasPtr::HasPtr(const HasPtr &c)" << endl;
+}
+
+// HasPtr::HasPtr(HasPtr &&c)
+// 	: ps(c.ps)
+// 	, i(c.i)
+// {
+// 	cout << "HasPtr::HasPtr(HasPtr &&c)" << endl;
+// 	c.ps = nullptr;
+// }
+
+HasPtr &
+HasPtr::operator=(HasPtr c)
+{
+	cout << "HasPtr &operator=(HasPtr c)" << endl;
+	swap(*this, c);
+	return *this;
+}
+
+// HasPtr &
+// HasPtr::operator=(const HasPtr &cp) {
+// 	string *newPs = new string(*cp.ps);
+// 	// need to delete the orgin string
+// 	delete ps;
+// 	ps = newPs;
+// 	i = cp.i;
+
+// 	return *this;
+// }

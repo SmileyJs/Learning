@@ -13,6 +13,8 @@ public:
 	explicit Message(const string &s = "") : content(s) {}
 	Message(const Message &);
 	Message &operator=(const Message &);
+	Message(Message &&) noexcept;
+	Message &operator=(Message &&) noexcept;
 	~Message();
 
 	void save(Folder &);
@@ -26,6 +28,7 @@ private:
 	void removeFromFolder();
 	void addFld(Folder *);
 	void removeFld(Folder *);
+	void moveFoloder(Message *);
 };
 
 void swap(Message &, Message &);
@@ -61,11 +64,30 @@ Message::Message(const Message &m)
 Message &
 Message::operator=(const Message &m)
 {
+	removeFromFolder();
+
 	content = m.content;
 	folder = m.folder;
 
-	removeFromFolder();
 	addToFolder(*this);
+
+	return *this;
+}
+
+Message::Message(Message &&c) noexcept
+	: content(std::move(c.content))
+{
+	moveFoloder(&c);
+}
+
+Message &
+Message::operator=(Message &&c) noexcept
+{
+	if (this != &c) {
+		removeFromFolder();
+		content = std::move(c.content);
+		moveFoloder(&c);
+	}
 
 	return *this;
 }
@@ -73,6 +95,18 @@ Message::operator=(const Message &m)
 Message::~Message()
 {
 	removeFromFolder();
+}
+
+void
+Message::moveFoloder(Message *m)
+{
+	folder = std::move(m->folder);
+	for (auto i : folder) {
+		i->removeMsg(m);
+		i->addMsg(this);
+	}
+
+	m->folder.clear();
 }
 
 void

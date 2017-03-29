@@ -15,6 +15,9 @@ public:
 	StrVec &operator=(const StrVec &);
 	~StrVec();
 
+	StrVec(StrVec &&) noexcept;
+	StrVec& operator=(StrVec &&) noexcept;
+
 	string *begin() const { return elements; }
 	string *end() const { return cap; }
 
@@ -77,6 +80,33 @@ StrVec::~StrVec()
 	free();
 }
 
+StrVec::StrVec(StrVec &&c) noexcept
+	: elements(c.elements)
+	, firstFree(c.firstFree)
+	, cap(c.cap)
+{
+	c.elements = nullptr;
+	c.firstFree = nullptr;
+	c.cap = nullptr;
+}
+
+StrVec &
+StrVec::operator=(StrVec &&c) noexcept
+{
+	if (this != &c) {
+		free();
+		elements = c.elements;
+		firstFree = c.firstFree;
+		cap = c.cap;
+
+		c.elements = nullptr;
+		c.firstFree = nullptr;
+		c.cap = nullptr;
+	}
+
+	return *this;
+}
+
 void
 StrVec::chkNAllocate()
 {
@@ -112,7 +142,7 @@ pair<string *, string *>
 StrVec::allocNCopy(const string *b,const string *e)
 {
 	auto data = alloc.allocate(e - b);
-	return {data, uninitialized_copy(b, e, data)};
+	return {data, uninitialized_copy(make_move_iterator(b), make_move_iterator(e), data)};
 }
 
 void
@@ -123,9 +153,9 @@ StrVec::allocNMove(size_t n)
 	auto dest = newData;
 	auto elem = elements;
 
-	for (auto i = 0; i != size(); ++i) {
-		alloc.construct(dest++, std::move(*elem++));
-	}
+	// for (auto i = 0; i != size(); ++i) {
+	// 	alloc.construct(dest++, std::move(*elem++));
+	// }
 
 	free();
 
