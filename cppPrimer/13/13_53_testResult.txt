@@ -1,0 +1,40 @@
+copy-swap ---time for 1M 99ms
+
+before swap a b
+HasPtr::HasPtr(const HasPtr &c) a1
+HasPtr::HasPtr(const HasPtr &c) b2
+HasPtr &operator=(HasPtr c) b2
+HasPtr::swap() begin--left: a1 right: b2
+HasPtr::swap() end--left: b2 right: a1
+HasPtr::HasPtr(const HasPtr &c) a1
+HasPtr &operator=(HasPtr c) a1
+HasPtr::swap() begin--left: b2 right: a1
+HasPtr::swap() end--left: a1 right: b2
+after swap b a
+
+copy-swap ---time for 1M 99ms
+
+before swap a b
+HasPtr::HasPtr(const HasPtr &c) a1
+HasPtr::HasPtr(const HasPtr &c) b2
+HasPtr &operator=(HasPtr c) b2
+HasPtr::HasPtr(const HasPtr &c) a1
+HasPtr &operator=(HasPtr c) a1
+after swap b a
+
+copy-assignment---time for 1M 134ms
+
+before swap a b
+HasPtr::HasPtr(HasPtr &&c) a1
+HasPtr::operator=(const HasPtr &cp)b2
+HasPtr::operator=(const HasPtr &cp)a1
+after swap b a
+
+move-assignment---time for 1M 42ms
+
+before swap a b
+HasPtr::HasPtr(HasPtr &&c) a1
+HasPtr::operator=(HasPtr &&c)b2
+HasPtr::operator=(HasPtr &&c)a1
+after swap b a
+
