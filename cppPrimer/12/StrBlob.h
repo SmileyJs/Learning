@@ -33,6 +33,7 @@ public:
 	string & front() const;
 	string & back() const;
 	void push_back(const string &s) const;
+	void push_back(string &&) const;
 	void pop_back();
 
 	StrBlobPtr begin();
@@ -127,6 +128,12 @@ void
 StrBlob::push_back(const string &s) const
 {
 	data->push_back(s);
+}
+
+void
+StrBlob::push_back(string &&s) const
+{
+	data->push_back(std::move(s));
 }
 
 void
