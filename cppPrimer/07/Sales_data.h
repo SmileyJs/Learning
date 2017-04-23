@@ -14,6 +14,9 @@ class Sales_data{
 	friend ostream &print(ostream &, const Sales_data &);
 	friend Sales_data add(Sales_data &, Sales_data &);
 
+	friend ostream& operator<<(ostream &os, const Sales_data &c);
+	friend istream& operator>>(istream &is, Sales_data &c);
+
 public:
 	Sales_data() = default;
 	Sales_data(istream &is) {
@@ -100,3 +103,28 @@ operator+(const Sales_data &lhs, const Sales_data &rhs)
 // Sales_data::Sales_data(istream &is) {
 // 	read(is, *this);
 // }
+
+ostream&
+operator<<(ostream &os, const Sales_data &c)
+{
+	os << c.bookNo << " " << c.units_sold << " " << c.revenue 
+		<< " " << c.avg_price();
+
+	return os;
+}
+
+istream&
+operator>>(istream &is, Sales_data &c)
+{
+	double price = 0.0;
+	is >> c.bookNo >> c.units_sold >> price;
+
+	if (is) {
+		c.revenue = price * c.units_sold;
+	}
+	else {
+		c = Sales_data();
+	}
+
+	return is;
+}
