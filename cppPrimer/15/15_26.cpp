@@ -48,6 +48,14 @@ public:
 		return *this;
 	}
 
+	virtual Quote* clone() const &{
+		return new Quote(*this);
+	}
+
+	virtual Quote* clone() && {
+		return new Quote(std::move(*this));
+	}
+
 	virtual ~Quote() 
 	{
 		cout << __PRETTY_FUNCTION__ << endl;
@@ -116,6 +124,14 @@ public:
 		cout << __PRETTY_FUNCTION__ << endl;
 	};
 
+	virtual Bulk_Quote* clone() const & override {
+		return new Bulk_Quote(*this);
+	}
+
+	virtual Bulk_Quote* clone() && override {
+		return new Bulk_Quote(std::move(*this));
+	}
+
 	double net_price(size_t n) const override {
 		if (n <= min_qty) {
 			return n * price;
@@ -140,43 +156,3 @@ print_total(ostream &os, const Quote &item, size_t n)
 	return price;
 }
 
-int
-main(int argc, char const *argv[])
-{
-	Quote a("aaa", 10);
-	Bulk_Quote b("bbb", 10, 0.2, 50);
-
-	// Quote a1 = a;
-	// Bulk_Quote b1 = b;
-
-	// Quote a2 = Quote("ccc", 10);
-	// Bulk_Quote b2 = Bulk_Quote("ddd", 10, 0.2, 50);
-
-	// Quote a2;
-	// a2 = a1;
-	// Bulk_Quote b2;
-	// b2 = b1;
-
-	// 15_28
-	vector<Quote> iVec;
-	iVec.push_back(a);
-	iVec.push_back(b);
-
-	for (auto i = iVec.cbegin(); i != iVec.cend(); ++i) {
-		cout << i->net_price(70) << endl;
-	}	
-
-	vector<shared_ptr<Quote>> pVec;
-
-	shared_ptr<Quote> p1 = make_shared<Quote>(a);
-	shared_ptr<Bulk_Quote> p2 = make_shared<Bulk_Quote>(b);
-
-	pVec.push_back(p1);
-	pVec.push_back(p2);
-
-	for (auto i = pVec.cbegin(); i != pVec.cend(); ++i) {
-		cout << (*i)->net_price(70) << endl;
-	}
-
-	return 0;
-}

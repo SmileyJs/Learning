@@ -42,9 +42,7 @@ QueryText::QueryText(ifstream &input)
 			if (!res) {
 				res.reset(new set<unsigned>());
 			}
-			else {
-				res->insert(lineNo);
-			}
+			res->insert(lineNo);
 		}
 	}
 }
