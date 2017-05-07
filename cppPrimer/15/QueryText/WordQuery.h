@@ -17,7 +17,12 @@ private:
 	// 	return t.query(query_word);
 	// };
 
-	virtual const string rep() const override { return query_word; }
+	virtual const string rep() const override 
+	{ 
+		cout << __PRETTY_FUNCTION__ << endl;
+		return query_word; 
+	}
+
 	string query_word;
 };
 

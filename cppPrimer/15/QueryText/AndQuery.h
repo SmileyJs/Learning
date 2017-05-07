@@ -1,4 +1,4 @@
-#ifdef ANDQUERY_H
+#ifndef ANDQUERY_H
 #define ANDQUERY_H
 
 #include "BinaryQuery.h"
@@ -6,10 +6,10 @@
 
 class AndQuery : public BinaryQuery
 {
-	// friend Query operator&(const Query&, const Query&);
+	friend Query operator&(const Query&, const Query&);
 private:
-	AndQuery(const Query& lhs, const Query& rhs)
-		// : BinaryQuery(lhs, rhs, "&") 
+	AndQuery(const Query& l, const Query& r)
+		: BinaryQuery(l, r, "&") 
 	{
 		cout << __PRETTY_FUNCTION__ << endl;
 	}
@@ -21,8 +21,8 @@ class OrQuery : public BinaryQuery
 {
 	friend Query operator|(const Query&, const Query&);
 private:
-	OrQuery(const Query& lhs, const Query& rhs)
-		: BinaryQuery(lhs, rhs, "|") 
+	OrQuery(const Query& l, const Query& r)
+		: BinaryQuery(l, r, "|") 
 	{
 		cout << __PRETTY_FUNCTION__ << endl;
 	}

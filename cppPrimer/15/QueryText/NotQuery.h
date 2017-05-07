@@ -15,6 +15,7 @@ private:
 	}
 
 	virtual const string rep() const override {
+		cout << __PRETTY_FUNCTION__ << endl;
 		return "~(" + query.rep() +  ")"; 
 	}
 

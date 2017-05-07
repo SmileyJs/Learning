@@ -7,11 +7,12 @@
 class BinaryQuery : public QueryBase
 {
 protected:
-	BinaryQuery(const Query& lhs, const Query& rhs, string& s)
-		: lhs(lhs), rhs(rhs), opSym(s) {}
+	BinaryQuery(const Query& l, const Query& r, const string& s)
+		: lhs(l), rhs(r), opSym(s) {}
 	
 	virtual const string rep() const override {
-		return lhs.rep() + " " + opSym + " " + rhs.rep();
+		cout << __PRETTY_FUNCTION__ << " " + opSym << endl;
+		return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")";
 	}
 
 	// derive pure virtual eval, so Binary is also a abstract class.
