@@ -13,10 +13,10 @@ class Query
 	friend Query operator&(const Query&, const Query&);
 	friend Query operator|(const Query&, const Query&);
 public:
-	// const QueryResult eval(const TextQuery& t) const 
-	// { 
-	// 	return item->eval(t);
-	// }
+	const QueryResult eval(const TextQuery& t) const 
+	{ 
+		return item->eval(t);
+	}
 	const string rep() const
 	{
 		return item->rep();

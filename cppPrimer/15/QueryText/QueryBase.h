@@ -9,7 +9,7 @@ class QueryBase
 protected:
 	virtual ~QueryBase() = default;
 private:
-	// virtual const QueryResult eval(const TextQuery&) const = 0;
+	virtual const QueryResult eval(const TextQuery&) const = 0;
 	virtual const string rep() const = 0;
 };
 

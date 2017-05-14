@@ -12,10 +12,10 @@ private:
 		cout << __PRETTY_FUNCTION__ << endl;
 	}
 
-	// virtual const QueryResult eval(const TextQuery& t) const override 
-	// {
-	// 	return t.query(query_word);
-	// };
+	virtual const QueryResult eval(const TextQuery& t) const override 
+	{
+		return t.query(query_word);
+	};
 
 	virtual const string rep() const override 
 	{ 

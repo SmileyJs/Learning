@@ -19,7 +19,7 @@ private:
 		return "~(" + query.rep() +  ")"; 
 	}
 
-	// virtual const QueryResult eval(const TextQuery& t) const override;
+	virtual const QueryResult eval(const TextQuery& t) const override;
 	Query query;
 };
 
@@ -29,4 +29,23 @@ operator~(const Query& lhs) {
 	return shared_ptr<QueryBase>(new NotQuery(lhs));
 }
 
+const QueryResult
+NotQuery::eval(const TextQuery& t) const {
+	cout << __PRETTY_FUNCTION__ << endl;
+	QueryResult result = query.eval(t);
+
+	auto ret = make_shared<set<unsigned>>();
+	auto beg = result.begin(), end = result.end();
+
+	for (auto i = 1; i <= result.getFile()->size(); ++i) {
+		if (beg == end || *beg != i) {
+			ret->insert(i);
+		}
+		else if (beg != end){
+			++ beg;
+		}
+	}
+
+	return QueryResult(rep(), ret, result.getFile());
+}
 #endif

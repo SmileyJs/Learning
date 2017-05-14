@@ -8,6 +8,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <iterator>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ class TextQuery
 public:
 	TextQuery(ifstream&);
 	QueryResult query(const string&) const;
+	shared_ptr<vector<string>> handlePunct(const string& s) const;
 
 private:
 	shared_ptr<vector<string>> pData;
@@ -28,8 +30,14 @@ class QueryResult
 {
 public:
 	friend void print(ostream&, const QueryResult&);
+	friend void print(ostream&, const QueryResult&, size_t, size_t);
 	QueryResult(const string& s,shared_ptr<set<unsigned>> pLine, shared_ptr<vector<string>> data)
 		: word(s), pLineNos(pLine), pData(data) {}
+
+	set<unsigned>::iterator begin() const { return pLineNos->begin(); }
+	set<unsigned>::iterator end() const { return pLineNos->end(); }
+
+	const shared_ptr<vector<string>> getFile() const { return pData; }
 
 private:
 	string word;
@@ -51,14 +59,50 @@ TextQuery::TextQuery(ifstream& input)
 		string word;
 
 		while (lineStream >> word) {
-			shared_ptr<set<unsigned>> &res = wordMap[word];
+			auto str = handlePunct(word);
 
-			if (!res) {
-				res.reset(new set<unsigned>());
+			for (auto s : *str) {
+				shared_ptr<set<unsigned>> &res = wordMap[s];
+
+				if (!res) {
+					res.reset(new set<unsigned>());
+				}
+				res->insert(lineNo);
+
+				cout << s << " " << lineNo << endl;
 			}
-			res->insert(lineNo);
 		}
 	}
+}
+
+shared_ptr<vector<string>>
+TextQuery::handlePunct(const string& s) const
+{
+	shared_ptr<vector<string>> p = make_shared<vector<string>>();
+
+	size_t first = 0, index = 0;
+
+	while (index != s.size()) {
+		if (ispunct(s[index])) {
+			string word = s.substr(first, index - first);
+			if (!word.empty()) 
+				p->push_back(word);
+
+			p->push_back(s.substr(index, 1));
+
+			++ index;
+			first = index;
+		} 
+		else {
+			++ index;
+		}
+	}
+
+	string trail = s.substr(first);
+	if (! trail.empty())
+		p->push_back(trail);
+
+	return p;
 }
 
 QueryResult
@@ -78,9 +122,26 @@ TextQuery::query(const string& s) const
 void
 print(ostream& os, const QueryResult& result)
 {
+	os << __PRETTY_FUNCTION__ << endl;
 	for (auto i : *(result.pLineNos)) {
-		os << "line" << i << result.pData->at(i-1) << endl;
+		os << "line: " << i << " " << result.pData->at(i-1) << endl;
 	}
 }
 
+void
+print(ostream& os, const QueryResult& result, size_t beg, size_t end)
+{
+	os << __PRETTY_FUNCTION__ << endl;
+
+	if (end < beg) {
+		cout << "illegal range!" << endl;
+	}
+	else {
+		for (auto i : *(result.pLineNos)) {
+			if (i >= beg && i <= end) {
+				os << "line: " << i << " " << result.pData->at(i-1) << endl;
+			}
+		}
+	}
+}
 #endif
