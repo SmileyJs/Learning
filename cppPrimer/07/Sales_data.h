@@ -26,7 +26,8 @@ public:
 	Sales_data(const string &s, unsigned n, double price) : 
 		bookNo(s), units_sold(n), revenue(price*n) { };
 
-	Sales_data& operator += (const Sales_data &);
+	Sales_data& operator+=(const Sales_data &);
+	Sales_data& operator=(const string&);
 
 	// 7_14
 	// Sales_data() : units_sold(0), revennu(0.0) { };
@@ -83,8 +84,27 @@ add(Sales_data &lhs, Sales_data&rhs) {
 	return sum;
 }
 
+// Sales_data&
+// Sales_data::operator+=(const Sales_data &rhs)
+// {
+// 	Sales_data old = *this;
+// 	*this = old + rhs;
+
+// 	return *this;
+// }
+
+// Sales_data
+// operator+(const Sales_data &lhs, const Sales_data &rhs)
+// {
+// 	Sales_data ret;
+// 	ret.units_sold = lhs.units_sold + rhs.units_sold;
+// 	ret.revenue = lhs.revenue + rhs.revenue;
+
+// 	return ret;
+// }
+
 Sales_data&
-Sales_data::operator+=(const Sales_data &rhs)
+Sales_data::operator+=(const Sales_data& rhs)
 {
 	units_sold += rhs.units_sold;
 	revenue += rhs.revenue;
@@ -93,10 +113,11 @@ Sales_data::operator+=(const Sales_data &rhs)
 }
 
 Sales_data
-operator+(const Sales_data &lhs, const Sales_data &rhs)
+operator+(const Sales_data& lhs, const Sales_data& rhs)
 {
 	Sales_data ret(lhs);
 	ret += rhs;
+
 	return ret;
 }
 
@@ -127,4 +148,14 @@ operator>>(istream &is, Sales_data &c)
 	}
 
 	return is;
+}
+
+Sales_data&
+Sales_data::operator=(const string& isbn)
+{
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+	*this = Sales_data(isbn);
+
+	return *this;
 }

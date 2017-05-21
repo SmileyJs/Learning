@@ -13,6 +13,9 @@ class ConstStrBlobPtr;
 
 class StrBlob {
 public:
+	friend bool operator==(const StrBlob&, const StrBlob&);
+	friend bool operator<(const StrBlob&, const StrBlob&);
+
 	// using size_type = vector<string>::size_type;
 	typedef vector<string>::size_type size_type;
 
@@ -23,8 +26,8 @@ public:
 	StrBlob(vector<string> &vec);
 	explicit StrBlob(initializer_list<string> il);
 
-	size_type size() { return data->size();}
-	bool empty() { return data->empty(); };
+	size_type size() const { return data->size(); }
+	bool empty() const { return data->empty(); }
 
 	string & front();
 	string & back();
@@ -43,6 +46,9 @@ public:
 	ConstStrBlobPtr end() const;
 
 	unsigned count() const { return data.use_count(); }
+
+	string& operator[](size_t);
+	const string& operator[](size_t) const;
 
 private:
 	shared_ptr<vector<string>> data;
@@ -64,7 +70,6 @@ StrBlob::StrBlob(initializer_list<string> il)
 {
 	data = make_shared<vector<string>>(il);
 }
-
 
 void
 StrBlob::check(size_type t, const string &msg)
@@ -153,6 +158,18 @@ public:
 
 	bool operator!=(const StrBlobPtr &p) { return curr != p.curr; }
 	unsigned count() const { return wPtr.use_count(); }
+	string& operator[](size_t);
+	const string& operator[](size_t) const;
+
+	StrBlobPtr& operator++();
+	StrBlobPtr& operator--();
+	StrBlobPtr operator++(int);
+	StrBlobPtr operator--(int);
+
+	StrBlobPtr& operator-=(size_t);
+	StrBlobPtr& operator+=(size_t);
+	StrBlobPtr& operator-(size_t);
+	StrBlobPtr& operator+(size_t);
 
 private:	
 	shared_ptr<vector<string>> check(vector<string>::size_type, const string &msg) const;
@@ -184,7 +201,7 @@ StrBlobPtr::check(vector<string>::size_type i, const string &msg) const
 		throw runtime_error("unbound StrBlobPtr");
 	}
 	else {
-		if (i > ret->size()) throw out_of_range(msg);
+		if (i >= ret->size()) throw out_of_range(msg);
 	}
 
 	return ret;
@@ -208,10 +225,11 @@ public:
 	ConstStrBlobPtr() : curr(0) {}
 	ConstStrBlobPtr(const StrBlob &a, size_type sz = 0) : wPtr(a.data), curr(sz) {}
 
-	const string &deRef() const;
-	ConstStrBlobPtr &incr();
+	const string& deRef() const;
+	ConstStrBlobPtr& incr();
 
 	bool operator!=(const ConstStrBlobPtr &p) { return curr == p.curr; }
+	const string& operator[](size_t) const;
 
 private:
 	shared_ptr<vector<string>> check(size_type sz, const string &msg) const;
@@ -228,7 +246,7 @@ ConstStrBlobPtr::check(size_type sz, const string &msg) const
 		throw runtime_error("unbound StrBlobPtr");
 	}
 	else {
-		if (sz > ret->size()) 
+		if (sz >= ret->size()) 
 			throw out_of_range(msg);
 	}
 
@@ -261,4 +279,175 @@ ConstStrBlobPtr
 StrBlob::end() const
 {
 	return ConstStrBlobPtr(*this, data->size());
+}
+
+bool
+operator==(const StrBlob& lhs, const StrBlob& rhs)
+{
+	return *lhs.data == *rhs.data;
+}
+
+bool
+operator!=(const StrBlob& lhs, const StrBlob& rhs)
+{
+	return !(lhs == rhs);
+}
+
+bool
+operator<(const StrBlob& lhs, const StrBlob& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return *lhs.data < *rhs.data;
+}
+
+bool
+operator>(const StrBlob& lhs, const StrBlob& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return rhs < lhs;
+}
+
+bool
+operator<=(const StrBlob& lhs, const StrBlob& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return !(rhs < lhs);
+}
+
+bool
+operator>=(const StrBlob& lhs, const StrBlob& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return !(lhs < rhs);
+}
+
+string&
+StrBlob::operator[](size_t n)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	check(n, "out_of_range");
+	return data->at(n);
+}
+
+const string&
+StrBlob::operator[](size_t n) const
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	check(n, "out_of_range");
+	return data->at(n);
+}
+
+string&
+StrBlobPtr::operator[](size_t n)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	auto p = check(n, "out_of_range");
+
+	return (*p)[n];
+}
+
+const string&
+StrBlobPtr::operator[](size_t n) const
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	auto p = check(n, "out_of_range");
+
+	return (*p)[n];
+}
+
+const string&
+ConstStrBlobPtr::operator[](size_t n) const
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	auto p = check(n, "out_of_range");
+
+	return (*p)[n];
+}
+
+StrBlobPtr&
+StrBlobPtr::operator++()
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	check(curr, "increment past end of StrBlob");
+	++curr;
+	return *this;
+}
+
+StrBlobPtr&
+StrBlobPtr::operator--()
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	--curr;
+	check(curr, "decrement past begin of StrBlob");
+	return *this;
+}
+
+StrBlobPtr
+StrBlobPtr::operator++(int)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	StrBlobPtr ret = *this;
+	++*this;
+
+	return ret;
+}
+
+StrBlobPtr
+StrBlobPtr::operator--(int)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	StrBlobPtr ret = *this;
+	--*this;
+
+	return ret;
+}
+
+StrBlobPtr&
+StrBlobPtr::operator+=(size_t n)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	curr += n;
+	check(curr, "out of range+=.");
+
+	return *this;
+}
+
+StrBlobPtr&
+StrBlobPtr::operator-=(size_t n)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	curr -= n;
+	check(curr, "out of range-=");
+
+	return *this;
+}
+
+StrBlobPtr&
+StrBlobPtr::operator+(size_t n)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	*this += n;
+
+	return *this;
+}
+
+StrBlobPtr&
+StrBlobPtr::operator-(size_t n)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	*this -= n;
+
+	return *this;
 }

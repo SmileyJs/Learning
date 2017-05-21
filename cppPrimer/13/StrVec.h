@@ -17,13 +17,16 @@ public:
 
 	StrVec(StrVec &&) noexcept;
 	StrVec& operator=(StrVec &&) noexcept;
+	StrVec& operator=(initializer_list<string> il);
+	string& operator[](size_t);
+	const string& operator[](size_t) const;
 
 	string *begin() const { return elements; }
 	string *end() const { return cap; }
 
 	void push_back(const string &);
 
-	size_t size() { return firstFree - elements; }
+	size_t size() const { return firstFree - elements; }
 	size_t capacity() { return cap - elements; }
 	void reserve(size_t);
 	void resize(size_t, const string &t = "");
@@ -193,4 +196,75 @@ StrVec::resize(size_t n, const string &t)
 			alloc.destroy(--firstFree);
 		}
 	}
+}
+
+bool
+operator==(const StrVec& lhs, const StrVec& rhs)
+{
+	return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+}
+
+bool
+operator!=(const StrVec& lhs, const StrVec& rhs)
+{
+	return !(lhs == rhs);
+}
+
+bool
+operator<(const StrVec& lhs, const StrVec& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+
+bool
+operator>(const StrVec& lhs, const StrVec& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return rhs < lhs;
+}
+
+bool
+operator<=(const StrVec& lhs, const StrVec& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return !(rhs < lhs);
+}
+
+bool
+operator>=(const StrVec& lhs, const StrVec& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return !(lhs < rhs);
+}
+
+StrVec&
+StrVec::operator=(initializer_list<string> il)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	auto data = allocNCopy(il.begin(), il.end());
+
+	elements = data.first;
+	firstFree = cap = data.second;
+
+	return *this;
+}
+
+string&
+StrVec::operator[](size_t n)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	return elements[n];
+}
+
+const string&
+StrVec::operator[](size_t n) const
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	return elements[n];
 }

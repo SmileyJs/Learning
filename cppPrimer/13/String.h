@@ -4,7 +4,9 @@
 using namespace std;
 
 class String {
-
+	friend ostream& operator<<(ostream&, const String&);
+	friend bool operator==(const String&, const String&);
+	friend bool operator<(const String&, const String&);
 public:
 	String() : String("") {}
 	String(const char*);
@@ -14,9 +16,11 @@ public:
 
 	String(String &&) noexcept;
 	String& operator=(String &&) noexcept;
+	char& operator[](size_t);
+	const char& operator[](size_t) const;
 
 	size_t length() { return pEnd - pBeg - 1; }
-	size_t size() { return pEnd - pBeg; }
+	size_t size() const { return pEnd - pBeg; }
 	const char* c_str() { return pBeg; }
 
 private:
@@ -113,4 +117,78 @@ String::operator=(String &&c) noexcept
 	}
 
 	return *this;
+}
+
+ostream&
+operator<<(ostream& os, const String& s)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	for (auto  i = s.pBeg; i != s.pEnd; ++i) {
+		os << *i;
+	}
+
+	return os;
+}
+
+bool
+operator==(const String& lhs, const String& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return (lhs.size() == rhs.size() && std::equal(lhs.pBeg, lhs.pEnd, rhs.pBeg));
+}
+
+bool
+operator!=(const String& lhs, const String& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return !(lhs == rhs);
+}
+
+bool
+operator<(const String& lhs, const String& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return std::lexicographical_compare(lhs.pBeg, lhs.pEnd, rhs.pBeg, rhs.pEnd);
+}
+
+bool
+operator>(const String& lhs, const String& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return rhs < lhs;
+}
+
+bool
+operator<=(const String& lhs, const String& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return !(rhs < lhs);
+}
+
+bool
+operator>=(const String& lhs, const String& rhs)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+
+	return !(lhs < rhs);
+}
+
+char&
+String::operator[](size_t n)
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	return pBeg[n];
+}
+
+const char&
+String::operator[](size_t n) const
+{
+	cout << __PRETTY_FUNCTION__ << endl;
+	return pBeg[n];
 }
