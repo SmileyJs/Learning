@@ -36,6 +36,9 @@ public:
 	double avg_price() const;
 	Sales_data& combine(const Sales_data &rhs);
 
+	explicit operator string() const { return bookNo; }
+	explicit operator double() const { return revenue;}
+
 private:
 	string bookNo;
 	unsigned units_sold = 0;
