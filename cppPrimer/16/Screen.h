@@ -1,102 +1,93 @@
 #include <iostream>
-#include <vector>
-#include <memory>
+#include <string>
 
 using namespace std;
 
-template <typename T> class Screen;
+using pos = string::size_type;
 
-template <typename T> class WindowsManager
+template <pos W, pos H> class Screen;
+
+template <pos W, pos H> ostream& operator<<(ostream&, const Screen<W, H>&);
+template <pos W, pos H> istream& operator>>(istream&, Screen<W, H>&);
+
+template <pos W, pos H> class Screen
 {
 public:
-	using screenIndex = vector<Screen<T>>::size_type;
+	friend ostream& operator<<<W, H>(ostream&, const Screen<W, H>&);
+	friend istream& operator>><W, H>(istream&, Screen<W, H>&);
 
-	screenIndex addScreen(const Screen<T>&);
-	void clear(screenIndex);
-private:
-	vector<Screen<T>> screens;
-};
+	Screen() {}
+	Screen(char c) : content(W*H, c) {}
 
-template <typename T> class Screen
-{
-public:
-	using pos = string::size_type;
-	friend void WindowsManager<T>::clear(WindowsManager<T>::screenIndex);
+	char get() const;
+	char get(pos, pos) const;
 
-	Screen() : m_pData(make_shared<vector<T>>()) {}
-	Screen(pos i, pos j) : wd(i), ht(j), m_pData(make_shared<vector<T>>()) {}
-	Screen(pos i, pos j, const T& c) : wd(i), ht(j), m_pData(make_shared<vector<T>>(c)) {}
-
-	const T& get(pos);
-	const T& get(pos, pos);
-
-	Screen& set(const T&);
-	Screen& set(pos, pos, const T&);
+	Screen& set(char);
+	Screen& set(pos, pos, char);
 
 	Screen& move(pos, pos);
-	Screen& display();
 
 private:
-	void do_display() {
-		cout << m_pData->at[cursor] << endl;
-	}
-
-	pos wd = 0;
-	pos ht = 0;
 	pos cursor = 0;
-	shared_ptr<vector<T>> m_pData;
+	string content;
 };
 
-template <typename T>
-const T& Screen<T>::get(pos cursor)
+template <pos W, pos H>
+char Screen<W, H>::get() const
 {
-	return m_pData->at[cursor];
+	return content[cursor];
 }
 
-template <typename T>
-const T& Screen<T>::get(pos x, pos y)
+template <pos W, pos H>
+char Screen<W, H>::get(pos x, pos y) const
 {
-	return m_pData->at[wd*(y-1) + x];
+	return content[W*y + x];
 }
 
-template <typename T>
-Screen<T>& Screen<T>::set(const T& c)
+template <pos W, pos H>
+Screen<W, H>& Screen<W, H>::set(char c)
 {
-	m_pData->at[cursor] = c;
-}
-
-template <typename T>
-Screen<T>& Screen<T>::set(pos x, pos y, const T& c)
-{
-	m_pData->at[wd*(y - 1) + x] = c;
-}
-
-template <typename T>
-Screen<T>& Screen<T>::move(pos x, pos y)
-{
-	cursor = wd*(y - 1) + x;
+	content[cursor++] = c;
+	cursor = (cursor > W*H ? W*H : cursor);
 	return *this;
 }
 
-template <typename T>
-Screen<T>& Screen<T>::display()
+template <pos W, pos H>
+Screen<W, H>& Screen<W, H>::set(pos x, pos y, char c)
 {
-	do_display();
+	content[W*y + x] = c;
 	return *this;
 }
 
-template <typename T>
-WindowsManager<T>::screenIndex
-WindowsManager<T>::addScreen(const Screen<T>& s)
+template <pos W, pos H>
+Screen<W, H>& Screen<W, H>::move(pos x, pos y)
 {
-	screens.push_back(s);
-	return screens.size() - 1;
+	cursor = W*y + H;
+	return *this;
 }
 
-template <typename T>
-void
-WindowsManager<T>::clear(WindowsManager<T>::screenIndex index)
+template <pos W, pos H>
+ostream& operator<<(ostream& os, const Screen<W, H>& lhs)
 {
-	Screen<T>& s = screens[index];
-	s.m_pData->clear();
+	for (pos i = 0; i != H; ++i) {
+		for (pos j = 0; j != W; ++j) {
+			os << lhs.get(i, j);
+		}
+		os << endl;
+	}
+
+	return os;
+}
+
+template <pos W, pos H>
+istream& operator>>(istream& is, Screen<W, H>& lhs)
+{
+	string input;
+	is >> input;
+
+	for (auto c : input) {
+		lhs.set(c);
+	}
+
+	return is;
 }

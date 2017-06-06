@@ -37,4 +37,4 @@ main(int argc, char const *argv[])
 	cout << a->deref() << endl;
 
 	return 0;
-}
+}	
