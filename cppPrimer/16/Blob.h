@@ -201,7 +201,7 @@ Blob<T>& Blob<T>::operator=(Blob<T>&& rhs)
 	return *this;
 }
 
-// template <typename T> bool operator==(const BlobPtr<T>&, const BlobPtr<T>&);
+template <typename T> bool operator==(const BlobPtr<T>&, const BlobPtr<T>&);
 template <typename T> bool operator!=(const BlobPtr<T>&, const BlobPtr<T>&);
 template <typename T> bool operator<(const BlobPtr<T>&, const BlobPtr<T>&);
 template <typename T> bool operator>(const BlobPtr<T>&, const BlobPtr<T>&);
@@ -210,7 +210,7 @@ template <typename T> bool operator>=(const BlobPtr<T>&, const BlobPtr<T>&);
 
 template <typename T> class BlobPtr
 {
-	friend bool operator==(const BlobPtr<T>& lhs, const BlobPtr<T>& rhs);
+	friend bool operator==<T>(const BlobPtr<T>& lhs, const BlobPtr<T>& rhs);
 	friend bool operator!=<T>(const BlobPtr<T>& lhs, const BlobPtr<T>& rhs);
 	friend bool operator< <T>(const BlobPtr<T>& lhs, const BlobPtr<T>& rhs);
 	friend bool operator> <T>(const BlobPtr<T>& lhs, const BlobPtr<T>& rhs);
