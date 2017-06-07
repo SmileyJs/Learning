@@ -62,7 +62,7 @@ Screen<W, H>& Screen<W, H>::set(pos x, pos y, char c)
 template <pos W, pos H>
 Screen<W, H>& Screen<W, H>::move(pos x, pos y)
 {
-	cursor = W*y + H;
+	cursor = W*y + x;
 	return *this;
 }
 
@@ -71,7 +71,7 @@ ostream& operator<<(ostream& os, const Screen<W, H>& lhs)
 {
 	for (pos i = 0; i != H; ++i) {
 		for (pos j = 0; j != W; ++j) {
-			os << lhs.get(i, j);
+			os << lhs.get(j, i);
 		}
 		os << endl;
 	}
