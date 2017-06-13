@@ -7,6 +7,8 @@
 #include <set>
 #include <memory>
 
+#include "../16/DebugDelete.h"
+
 using namespace std;
 
 class QueryResult;
@@ -16,7 +18,7 @@ public:
 
 	friend class QueryResult;
 
-	TextQuery(ifstream &file);
+	explicit TextQuery(ifstream &file);
 
 	const shared_ptr<QueryResult> query(const string &s);
 
@@ -40,10 +42,11 @@ private:
 // }
 
 TextQuery::TextQuery(ifstream &file)
+	// : data(make_shared<vector<string>>(), DebugDelete())
+	: data(new vector<string>(), DebugDelete()) // custom deleter may not use with std::make_shared, 
+	// as it has an internaldeleter which may not be replaced. As a result, keyword new is the only option to use with DebugDelete.
+	, wordMap(new map<string, set<int>>(), DebugDelete())
 {
-	data = make_shared<vector<string>>();
-	wordMap = make_shared<map<string, set<int>>>();
-
 	string line;
 	int lineNum = 0;
 

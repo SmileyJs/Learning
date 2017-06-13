@@ -34,6 +34,7 @@ public:
 	Blob(const Blob<T>&);
 	Blob(initializer_list<T>);
 	Blob(Blob<T>&&);
+	template <typename I> Blob(const I, const I);
 
 	T& front();
 	T& back();
@@ -82,6 +83,13 @@ template <typename T> Blob<T>::Blob(initializer_list<T> il)
 template <typename T> Blob<T>::Blob(Blob<T>&& rhs)
 {
 	m_pData = rhs.m_pData;
+}
+
+template <typename T>
+template <typename I>
+Blob<T>::Blob(const I b, const I e)
+	: m_pData(make_shared<vector<T>>(b, e))
+{
 }
 
 template <typename T>

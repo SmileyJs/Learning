@@ -22,7 +22,7 @@ public:
 	const string& operator[](size_t) const;
 
 	string *begin() const { return elements; }
-	string *end() const { return cap; }
+	string *end() const { return cap; } // firstFree?
 
 	void push_back(const string &);
 
