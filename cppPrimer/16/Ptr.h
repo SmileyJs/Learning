@@ -157,23 +157,118 @@ void SharedPtr<T>::reset(T* p, function<void(T*)> d)
 	m_deleter = d;
 }
 
-template <typename T>
+template <typename T, typename D = Delete>
 class UniquePtr
 {
 public:
-	UniquePtr(const T*);
+	UniquePtr(T*);
+	UniquePtr(T*, D);
+
+	UniquePtr(UniquePtr<T, D>&) = delete;
+	UniquePtr<T, D>& operator=(UniquePtr<T, D>&) = delete;
+
+	UniquePtr(UniquePtr&&) noexcept;
+	UniquePtr<T, D>& operator=(UniquePtr<T, D>&&) noexcept;
+
 	~UniquePtr() {
 		m_deleter(m_ptr);
 	}
 
+	void operator=(nullptr_t);
+
+	UniquePtr<T, D>& swap(UniquePtr<T, D>& rhs);
+
+	T* release();
+	void reset();
+	void reset(T*);
+	void reset(nullptr_t);
+
+	T* get() { return m_ptr; }
+	operator bool() { return m_ptr ? true : false; }
+	T& operator*() { return *m_ptr; }
+	T* operator&() { return & this->operator*(); }
+
 private:
-	T* m_ptr;
-	Delete m_deleter;
+	T* m_ptr = nullptr;
+	Delete m_deleter{Delete()};
 };
 
-template <typename T>
-UniquePtr<T>::UniquePtr(const T* p)
+template <typename T, typename D>
+UniquePtr<T, D>::UniquePtr(T* p)
 {
 	m_ptr = p;
 	m_deleter = Delete();
+}
+
+template <typename T, typename D>
+UniquePtr<T, D>::UniquePtr(T* p, D d)
+{
+	m_ptr = p;
+	m_deleter = d;
+}
+
+template <typename T, typename D>
+UniquePtr<T, D>::UniquePtr(UniquePtr<T, D>&& u) noexcept
+{
+	m_ptr = u.m_ptr;
+	u.m_ptr = nullptr;
+}
+
+template <typename T, typename D>
+UniquePtr<T, D>& UniquePtr<T, D>::operator=(UniquePtr<T, D>&& u) noexcept
+{
+	if (m_ptr != u.m_ptr) {
+		m_deleter(m_ptr);
+		m_ptr = u.m_ptr;
+		m_deleter = u.m_deleter;
+	}
+
+	return *this;
+}
+
+template <typename T, typename D>
+void UniquePtr<T, D>::operator=(nullptr_t)
+{
+	if (m_ptr) {
+		m_deleter(m_ptr);
+	
+		m_ptr = nullptr;
+	}
+}
+
+template <typename T, typename D>
+UniquePtr<T, D>& UniquePtr<T, D>::swap(UniquePtr<T, D>& rhs)
+{
+	using std::swap;
+
+	swap(m_ptr, rhs.m_ptr);
+	swap(m_deleter, rhs.m_deleter);
+}
+
+template <typename T, typename D>
+void UniquePtr<T, D>::reset()
+{
+	m_deleter(m_ptr);
+	m_ptr = nullptr;
+}
+
+template <typename T, typename D>
+void UniquePtr<T, D>::reset(T* p)
+{
+	m_deleter(m_ptr);
+	m_ptr = p;
+}
+
+template <typename T, typename D>
+void UniquePtr<T, D>::reset(nullptr_t)
+{
+	reset();
+}
+
+template <typename T, typename D>
+T* UniquePtr<T, D>::release()
+{
+	T* ret = m_ptr;
+	m_ptr = nullptr;
+	return ret;
 }

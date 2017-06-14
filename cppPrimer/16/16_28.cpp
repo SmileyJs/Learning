@@ -37,5 +37,25 @@ main(int argc, char const *argv[])
 
 	cout << *p1.get() << endl;
 
+	vec[1].swap(vec[6]);
+
+	cout << *vec[1] << endl;
+	cout << *vec[6].get() << endl;
+
+	cout << "unique ptr" << endl;
+
+	vector<string> v1{"aa", "bb", "cc", "dd", "ee"};
+
+	UniquePtr<string> pu1(new string("aa"));
+	UniquePtr<string> pu2(new string("bb"));
+	UniquePtr<string> pu3(new string("vv"));
+
+	cout << *pu1.get() << endl;
+	cout << *pu1 << endl;
+
+	pu1.swap(pu3);
+
+	cout << *pu1 << endl;
+
 	return 0;
 }
