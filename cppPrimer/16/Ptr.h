@@ -1,6 +1,7 @@
 #include <iostream>
 #include <functional>
 #include <utility>
+#include <memory>
 
 using namespace std;
 
@@ -9,7 +10,8 @@ class Delete
 public:	
 	template <typename T> void operator()(T* p) {
 		cout << __PRETTY_FUNCTION__ << endl;
-		delete p;
+		if (p)
+			delete p;
 	}
 };
 
@@ -20,6 +22,7 @@ public:
 	SharedPtr(T* = nullptr,function<void(T*)> = Delete());
 	SharedPtr(const SharedPtr<T> &);
 	SharedPtr(SharedPtr<T>&&) noexcept;
+	SharedPtr(shared_ptr<T>, function<void(T*)> = Delete());
 
 	~SharedPtr() {
 		decrement_destroy();
@@ -27,6 +30,7 @@ public:
 
 	SharedPtr<T>& operator=(const SharedPtr<T>&);
 	SharedPtr<T>& operator=(SharedPtr<T>&&) noexcept;
+	SharedPtr<T>& operator=(shared_ptr<T>);
 
 	operator bool() { return m_ptr ? true : false; }
 
@@ -36,7 +40,7 @@ public:
 	
 	SharedPtr<T>& swap(SharedPtr<T>&);
 
-	size_t use_count() { return *m_pCount; }
+	size_t use_count() const { return *m_pCount; }
 	bool unique() { return 1 == *m_pCount; }
 	T* get() const { return m_ptr; }
 	T& operator*() { return *m_ptr; }
@@ -80,6 +84,14 @@ SharedPtr<T>::SharedPtr(SharedPtr<T>&& rhs) noexcept
 }
 
 template <typename T>
+SharedPtr<T>::SharedPtr(shared_ptr<T> p, function<void(T*)> d)
+{
+	if (p) {
+		*this = SharedPtr(new T(*p), d);
+	}
+}
+
+template <typename T>
 SharedPtr<T>& SharedPtr<T>::operator=(const SharedPtr<T>& p)
 {
 	++ *p.m_pCount;
@@ -98,10 +110,22 @@ SharedPtr<T>& SharedPtr<T>::operator=(SharedPtr<T>&& p) noexcept
 {
 	cout << __PRETTY_FUNCTION__ << endl;
 
-	if (&this != p) {
+	if (m_ptr != p.m_ptr) {
 		decrement_destroy();
 
-		swap(*this, p);
+		swap(p);
+	}
+
+	return *this;
+}
+
+template <typename T>
+SharedPtr<T>& SharedPtr<T>::operator=(shared_ptr<T> p)
+{
+	if (p) {
+		decrement_destroy();
+
+		*this = SharedPtr(new T(*p));
 	}
 
 	return *this;
@@ -243,6 +267,8 @@ UniquePtr<T, D>& UniquePtr<T, D>::swap(UniquePtr<T, D>& rhs)
 
 	swap(m_ptr, rhs.m_ptr);
 	swap(m_deleter, rhs.m_deleter);
+
+	return *this;
 }
 
 template <typename T, typename D>

@@ -44,8 +44,6 @@ main(int argc, char const *argv[])
 
 	cout << "unique ptr" << endl;
 
-	vector<string> v1{"aa", "bb", "cc", "dd", "ee"};
-
 	UniquePtr<string> pu1(new string("aa"));
 	UniquePtr<string> pu2(new string("bb"));
 	UniquePtr<string> pu3(new string("vv"));
@@ -54,6 +52,10 @@ main(int argc, char const *argv[])
 	cout << *pu1 << endl;
 
 	pu1.swap(pu3);
+
+	cout << *pu1 << endl;
+
+	//pu1 = std::move(pu2); // redestruct pu2 when quit
 
 	cout << *pu1 << endl;
 
