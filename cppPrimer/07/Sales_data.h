@@ -6,8 +6,12 @@ using std::string;
 using std::istream;
 using std::ostream;
 
+// template <class T> class std::hash;
+
 class Sales_data;
 istream &read(istream &, Sales_data&);
+bool operator==(const Sales_data&, const Sales_data&);
+bool operator!=(const Sales_data&, const Sales_data&);
 
 class Sales_data{
 	friend istream &read(istream &, Sales_data &item);
@@ -16,6 +20,10 @@ class Sales_data{
 
 	friend ostream& operator<<(ostream &os, const Sales_data &c);
 	friend istream& operator>>(istream &is, Sales_data &c);
+	friend bool operator==(const Sales_data&, const Sales_data&);
+	friend bool operator!=(const Sales_data&, const Sales_data&);
+
+	friend class std::hash<Sales_data>;
 
 public:
 	Sales_data() = default;
@@ -161,4 +169,14 @@ Sales_data::operator=(const string& isbn)
 	*this = Sales_data(isbn);
 
 	return *this;
+}
+
+bool operator==(const Sales_data& lhs, const Sales_data& rhs)
+{
+	return lhs.bookNo == rhs.bookNo && lhs.units_sold == rhs.units_sold && lhs.revenue == rhs.revenue;
+}
+
+bool operator!=(const Sales_data& lhs, const Sales_data& rhs)
+{
+	return !operator==(lhs, rhs);
 }

@@ -30,6 +30,8 @@ public:
 	void reserve(size_t);
 	void resize(size_t, const T&);
 
+	template <typename... Args> void emplace_back(Args &&...);
+
 private:
 	allocator<T> alloc;
 	void checkNAlloc();
@@ -197,4 +199,12 @@ void Vec<T>::resize(size_t n, const T& t)
 			alloc.construct(firstFree++, t);
 		}
 	}
+}
+
+template <typename T>
+template <typename... Args>
+void Vec<T>::emplace_back(Args &&... args)
+{
+	checkNAlloc();
+	alloc.construct(firstFree++, std::forward<Args>(args)...);
 }

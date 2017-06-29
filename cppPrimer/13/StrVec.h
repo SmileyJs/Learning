@@ -33,6 +33,8 @@ public:
 
 	const string & at(size_t pos) { return *(elements + pos); }
 
+	template <typename... Args> void emplace_back(Args &&...);
+
 private:
 	allocator<string> alloc;
 	string *elements;
@@ -267,4 +269,11 @@ StrVec::operator[](size_t n) const
 {
 	cout << __PRETTY_FUNCTION__ << endl;
 	return elements[n];
+}
+
+template <typename... Args>
+void StrVec::emplace_back(Args &&... args)
+{
+	chkNAllocate();
+	alloc.construct(firstFree++, std::forward<Args>(args)...);
 }
