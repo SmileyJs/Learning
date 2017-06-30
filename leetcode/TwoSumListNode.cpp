@@ -4,72 +4,103 @@ using namespace std;
 
 struct ListNode {
 	int val;
-	ListNode* next;
+	ListNode *next;
 	explicit ListNode(int x) : val(x), next(nullptr) {} 
 };
 
-void print(ListNode* l)
+void print(ListNode *l)
 {
-	ListNode* p = l;
-	for (; p; p = p->next) {
+	ListNode *p = l;
+	while (p) {
 		cout << p->val << endl;
+		p = p->next;
 	}
 }
 
-class Solution
-{
-public:
-	static ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-		if (nullptr == l1)
-			l1 = new ListNode(0);
-		if (nullptr == l2)
-			l2 = new ListNode(0);
-		cout << l1 ->val << " " << l2->val << endl;
-		l1->val += l2->val;
-		cout << l1->val << endl;
+ListNode *
+addTwoNumbers(ListNode *lhs, ListNode *rhs) {
+	ListNode *pre = new ListNode(0), *head = pre;
+	int extra = 0;
 
-		if (0 == l1->val) {
-			return l1;
-		}
-		else if (l1->val > 9) {
-			if (l1->next) {
-				l1->next->val += l1->val / 10;
-			}
-			else {
-				l1->next = new ListNode(l1->val / 10);
-			}
+	while (lhs && rhs) {
+		int sum = lhs->val + rhs->val + extra;
+		extra = sum / 10;
 
-			l1->val %= 10;
-		}
-
-		addTwoNumbers(l1->next, l2->next);
-
-		return l1;
+		pre->next = new ListNode(sum % 10);
+		pre = pre->next;
+		lhs = lhs->next;
+		rhs = rhs->next;
 	}
-};
+	while (lhs) {
+		int sum = lhs->val + extra;
+		extra = sum / 10;
+
+		pre->next = new ListNode(sum % 10);
+		pre = pre->next;
+		lhs = lhs->next;
+	}
+	while (rhs) {
+		int sum = rhs->val + extra;
+		extra = sum / 10;
+
+		pre->next = new ListNode(sum % 10);
+		pre = pre->next;
+		rhs = rhs->next;
+	}
+	if (extra) {
+		pre->next = new ListNode(extra);
+	}
+
+	return head->next;
+}
+
+ListNode *
+addTwoNumbers2(ListNode *lhs, ListNode *rhs) {
+	ListNode *pre = new ListNode(0), *head = pre;
+	int extra = 0;
+
+	while (lhs || rhs) {
+		int sum = (lhs ? lhs->val : 0) + (rhs ? rhs->val : 0) + extra;
+		extra = sum / 10;
+
+		pre->next = new ListNode(sum % 10);
+		pre = pre->next;
+
+		if (lhs)
+			lhs = lhs->next;
+		if (rhs)
+			rhs = rhs->next;
+	}
+
+	if (extra) {
+		pre->next = new ListNode(extra);
+	}
+
+	return head->next;
+}
 
 int
 main(int argc, char const *argv[])
 {
-	ListNode* l1 = new ListNode(2);
+	ListNode *l1 = new ListNode(2);
 	l1->next = new ListNode(4);
 	l1->next->next = new ListNode(3);
 
 	print(l1);
 
-	ListNode* l2 = new ListNode(5);
+	ListNode *l2 = new ListNode(5);
 	l2->next = new ListNode(6);
 	l2->next->next = new ListNode(4);
 
 	print(l2);
 
-	ListNode* l3 = new ListNode(0);
-	ListNode* l4 = new ListNode(7);
+	ListNode *l3 = new ListNode(0);
+	ListNode *l4 = new ListNode(7);
 	l4->next = new ListNode(3);
 
 	cout << "result:\n";
 
-	print(Solution::addTwoNumbers(l3, l4));
+	print(addTwoNumbers2(l3, l4));
 
 	return 0;
 }
