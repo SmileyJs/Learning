@@ -1,0 +1,11 @@
+#version 100 core
+
+// Ouput data
+//varying vec3 color;
+
+void main()
+{
+
+	// Output color = red 
+	gl_FragCoord = vec3(1,0,0);
+}
