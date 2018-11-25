@@ -25,11 +25,15 @@ void *thr1_func(void *arg)
 {
 	PRINTTID;
 
-	struct A tmp = {1, 2, 3, 4};
+	struct A *tmp = (struct A *)malloc(sizeof(struct A));
+	tmp->a = 1;
+	tmp->b = 2;
+	tmp->c = 3;
+	tmp->d = 4;
 
-	printStruct("thread1", &tmp);
+	printStruct("thread1", tmp);
 
-	pthread_exit((void*)&tmp);
+	pthread_exit((void*)tmp);
 }
 
 void *thr2_func(void *arg)
@@ -61,7 +65,8 @@ main(int argc, char const *argv[])
 
 	pthread_join(tid2, NULL);
 
-	printStruct("main", t);
+	printStruct("main", (struct A*)t);
+	free(t);
 
 	return 0;
 }

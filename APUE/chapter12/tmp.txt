@@ -1,0 +1,7 @@
+start fork
+prepare
+parent
+parent return
+prepare
+child
+child return
