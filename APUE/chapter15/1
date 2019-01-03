@@ -1,0 +1,22 @@
+total 104
+ 0 -rw-rw-r-- 1 wjs wjs    0 1月   2 21:47 1
+ 4 -rw-rw-r-- 1 wjs wjs  315 1月   1 21:09 15_3.c
+ 4 -rw-rw-r-- 1 wjs wjs 1349 1月   1 23:14 15_7.c
+ 4 -rw-rw-r-- 1 wjs wjs  586 1月   2 21:47 15_8.c
+ 4 -rw-rw-r-- 1 wjs wjs 1108 1月   2 21:44 2
+12 -rwxrwxr-x 1 wjs wjs 8512 12月 18 23:27 add2
+ 4 -rw-rw-r-- 1 wjs wjs 1459 12月 18 23:27 add2.c
+12 -rwxrwxr-x 1 wjs wjs 8472 1月   2 21:47 a.out
+ 4 -rw-rw-r-- 1 wjs wjs  948 12月 24 22:38 msgqueue.c
+ 4 -rw-rw-r-- 1 wjs wjs 2503 12月 16 01:07 mypopen.c
+12 -rwxrwxr-x 1 wjs wjs 8488 12月 16 01:11 myuclc
+ 4 -rw-rw-r-- 1 wjs wjs  269 12月 16 01:06 myuclc.c
+ 4 -rw-rw-r-- 1 wjs wjs  534 12月 10 22:03 pipe1.c
+ 4 -rw-rw-r-- 1 wjs wjs 1487 12月 10 23:28 pipe2.c
+ 4 -rw-rw-r-- 1 wjs wjs  716 1月   1 21:05 popen1.c
+ 4 -rw-rw-r-- 1 wjs wjs 1261 12月 11 22:41 processWait.c
+ 4 -rw-rw-r-- 1 wjs wjs 1402 12月 25 22:52 semaphore.c
+ 4 -rw-rw-r-- 1 wjs wjs  942 12月 26 23:16 semposix.c
+ 4 -rw-rw-r-- 1 wjs wjs  797 12月 25 23:36 shm.c
+ 4 -rw-rw-r-- 1 wjs wjs 2178 1月   1 22:07 synergyProcess.c
+ 4 -rw-rw-r-- 1 wjs wjs 1099 12月 10 23:17 test.txt
